@@ -77,9 +77,23 @@ export function PregnancyTracker({ compact = false }: { compact?: boolean }) {
     localStorage.setItem(STORAGE_MODE, mode);
   }, [date, mode, hydrated]);
 
+  const hydratedRef = useRef(false);
+
   useEffect(() => {
     const el = chipRefs.current.get(selected);
-    el?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+    if (!el) return;
+    // Only nudge the horizontal chip scroller — never the page (that was
+    // yanking visitors past the hero on first load).
+    const scroller = el.parentElement;
+    if (!(scroller instanceof HTMLElement)) return;
+    const left =
+      el.offsetLeft - scroller.clientWidth / 2 + el.offsetWidth / 2;
+    if (!hydratedRef.current) {
+      hydratedRef.current = true;
+      scroller.scrollLeft = Math.max(0, left);
+      return;
+    }
+    scroller.scrollTo({ left: Math.max(0, left), behavior: "smooth" });
   }, [selected]);
 
   const pregnancy = date ? calcPregnancy(date, mode) : null;
