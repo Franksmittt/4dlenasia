@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { Fraunces, Outfit } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { Header } from "@/components/marketing/Header";
 import { Footer } from "@/components/marketing/Footer";
 import { StickyBookingFooter } from "@/components/interaction/StickyBookingFooter";
+import { ClarityAnalytics } from "@/components/analytics/ClarityAnalytics";
 import { clinicSchema } from "@/lib/seo/schema";
 import { SITE } from "@/lib/constants";
 import "./globals.css";
@@ -65,6 +67,8 @@ export default function RootLayout({
         <main className="flex-1">{children}</main>
         <Footer />
         <StickyBookingFooter />
+        <Analytics />
+        <ClarityAnalytics />
       </body>
     </html>
   );
