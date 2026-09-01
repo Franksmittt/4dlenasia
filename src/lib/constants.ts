@@ -1,3 +1,18 @@
+/** Set to false to restore the live marketing site. */
+export const PREVIEW_LOCKED = true;
+
+export const DEVELOPER = {
+  name: "Frank Smit",
+  phone: "+27769724559",
+  phoneDisplay: "076 972 4559",
+  whatsapp: "27769724559",
+} as const;
+
+export const WHATSAPP_DEVELOPER =
+  `https://wa.me/${DEVELOPER.whatsapp}?text=${encodeURIComponent(
+    "Hi Frank, I'd like to restore the website preview.",
+  )}`;
+
 export const SITE = {
   name: "4D Ultrasound Studio",
   tagline: "Meet your baby before they are born",
