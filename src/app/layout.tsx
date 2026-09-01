@@ -4,9 +4,11 @@ import { Analytics } from "@vercel/analytics/next";
 import { Header } from "@/components/marketing/Header";
 import { Footer } from "@/components/marketing/Footer";
 import { StickyBookingFooter } from "@/components/interaction/StickyBookingFooter";
+import { PreviewLock } from "@/components/lockscreen/PreviewLock";
 import { ClarityAnalytics } from "@/components/analytics/ClarityAnalytics";
 import { clinicSchema } from "@/lib/seo/schema";
-import { SITE } from "@/lib/constants";
+import { PREVIEW_LOCKED, SITE } from "@/lib/constants";
+import { cn } from "@/lib/utils";
 import "./globals.css";
 
 const outfit = Outfit({
@@ -47,6 +49,7 @@ export const metadata: Metadata = {
     images: ["/og.jpg"],
   },
   alternates: { canonical: SITE.url },
+  robots: PREVIEW_LOCKED ? { index: false, follow: false } : undefined,
 };
 
 export default function RootLayout({
@@ -54,19 +57,35 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const schema = clinicSchema();
+  const schema = PREVIEW_LOCKED ? null : clinicSchema();
 
   return (
-    <html lang="en-ZA" className={`${outfit.variable} ${fraunces.variable} h-full`}>
-      <body className="min-h-full flex flex-col antialiased bg-canvas text-ink">
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-        />
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
-        <StickyBookingFooter />
+    <html
+      lang="en-ZA"
+      className={`${outfit.variable} ${fraunces.variable} h-full`}
+    >
+      <body
+        className={cn(
+          "min-h-full flex flex-col antialiased bg-canvas text-ink",
+          PREVIEW_LOCKED && "overflow-hidden",
+        )}
+      >
+        {PREVIEW_LOCKED ? (
+          <PreviewLock />
+        ) : (
+          <>
+            {schema ? (
+              <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+              />
+            ) : null}
+            <Header />
+            <main className="flex-1">{children}</main>
+            <Footer />
+            <StickyBookingFooter />
+          </>
+        )}
         <Analytics />
         <ClarityAnalytics />
       </body>
